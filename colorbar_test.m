@@ -1,0 +1,19 @@
+function colorbar_test()
+
+h1 = figure(...
+        'Position',[400 100 800 800],...
+        'MenuBar','none',...
+        'NumberTitle','off',...
+        'Name','Test colorbar',...
+        'Color', 'w',...
+        'Resize','on');
+    
+     movegui(h1,'center');  
+    im = imread('scalp eeg.png');
+    view = imshow(im);
+    newmap = jet(10);
+    color_map = colormap(newmap);
+    
+    %c.Position  = [0.6 0.1 0.02 0.7];
+    
+end
