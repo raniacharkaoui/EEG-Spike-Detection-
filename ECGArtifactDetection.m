@@ -28,7 +28,7 @@ function ECGArtifactDetection(CurrentRecording)
     timeIn = Recordings.timeIn(1); % get the recordings starting time ( in seconds)
     timeOut = Recordings.timeOut(length(Recordings.timeOut)); % get the recordings starting time ( in seconds )
 
-%% FIRST MANNER TO DETECT THE CARDIAC ARTIFACTS (QRS PEAKS). Pre-processing first and detecting based on derivatives
+%% FIRST METHOD TO DETECT THE CARDIAC ARTIFACTS (QRS PEAKS). Pre-processing first and detecting based on derivatives. (Less sensitive to threshold's variation)
 
     for j=1:electrodeRow 
         [RawData] = GetData(timeIn,timeOut,electrode(j,:),electrodeRef,Recordings.fname,DetectionParameters,fileData); % get the data of the ECG electrode
