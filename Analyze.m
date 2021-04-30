@@ -212,6 +212,10 @@ function Analyze()
         disp(msg);
         SWI = -1*ones(NumDerivation,1);
         NumClusters = -1*ones(NumDerivation,1);
+        
+        % Artifacts study, uncomment the following function to launch the artifacts study.
+        %ArtifactsStudy(file,CurrentRecording,MuscleArtifactsTimeIn,MuscleArtifactsTimeOut);
+
         for Derivation = 1:NumDerivation  
             %retrieve alpha waves time
             AlphaWaves_TimeIn = file(CurrentRecording).AlphaWaves(round(Derivation/2)).DetectedTime(:,1);
