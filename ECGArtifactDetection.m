@@ -122,10 +122,11 @@ function ECGArtifactDetection(CurrentRecording)
         nrElectrodeRight = deblank(nrElectrodeRight_list(Derivation,:)); % string of the right electrone name
         
         derivation_name=[nrElectrodeLeft ' - ' nrElectrodeRight]; % name of the derivation
-        
+
         if isequal(derivation_name,'EEG T9 - EEG P9')||isequal(derivation_name,'EEG T10 - EEG P10')...
-                ||isequal(derivation_name,'EEG P3 - EEG O1')||isequal(derivation_name,'EEG P4 - EEG O2')...
-                ||isequal(derivation_name,'EEG T6 - EEG 02')||isequal(derivation_name,'EEG C3 - EEG P3')
+                     ||isequal(derivation_name,'EEG P3 - EEG O1')||isequal(derivation_name,'EEG P4 - EEG O2')...
+                     ||isequal(derivation_name,'EEG T6 - EEG O2')||isequal(derivation_name,'EEG C3 - EEG P3')...
+                     ||isequal(derivation_name,'EEG T5 - EEG O1')||isequal(derivation_name,'EEG T3 - EEG T5')
             % if the derivation is one of those derivations mentioned ( the
             % ones visually influenced by ECG artifacts), the artifacts
             % timings are stored in the cardiac_spike structure for that
