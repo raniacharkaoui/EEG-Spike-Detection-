@@ -3,6 +3,19 @@ function [ProcessedData] = PreProcessing(RawData,DetectionParameters)
 LengthData = length(RawData);
 RawData = Filter(RawData,DetectionParameters);
 
+% Denoising the signal using discrete wavelet transfrom 
+% Wavelet decomposition
+[C,L] = wavedec(RawData,4,'db4');
+approx = appcoef(C,L,'db4');
+[cd1,cd2,cd3,cd4] = detcoef(C,L,[1 2 3 4]);
+
+%% Thresholding: Remove by thresholding the cd1 with low amplitude keeping the important info of high amplitude peaks
+threshold = 5*std(cd1);
+ix = find(abs(C)<threshold);
+C(ix) = 0; % this is the artifacts timings put them into zero to visualize the signal
+%% Wavelet reconstruction
+RawData = waverec(C,L,'db4'); 
+
 % First derivation estimation
 Der(1) = (2*RawData(1))./8;
 Der(2) = (2*RawData(2)+RawData(1))./8;
@@ -25,7 +38,7 @@ ProcessedData(AverageWindow,LengthData) = 0;
 % Y(1) = tempY(1);
 % Y(length(tempY)) = tempY(end);
 % 
-% % On doit faire un traitement spécial pour les bords
+% % On doit faire un traitement spÃ©cial pour les bords
 % for i=2:4
 %     curLength = (i-1)*2+1;
 %     Y(i) = sum(tempY(1:curLength)) / curLength;
