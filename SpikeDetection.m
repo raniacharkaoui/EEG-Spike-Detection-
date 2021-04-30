@@ -19,7 +19,7 @@ function [DetectedSpikes] = SpikeDetection(File,DetectionParameters,ReferenceSpi
         min_time = 15/Fs;
         if (Recording.timeIn(k) < Recording.timeOut(k)) && (Recording.timeOut(k) - Recording.timeIn(k) > min_time)
             [RawData] = GetData(Recording.timeIn(k),Recording.timeOut(k),nrElectrodeLeft,nrElectrodeRight,Recording.fname,DetectionParameters,fileData);
-            [ProcessedData] = PreProcessing(RawData,DetectionParameters);    
+            [ProcessedData] = PreProcessing(RawData,DetectionParameters,File);    
             signal = ProcessedData;
             if length(signal) >= ReferenceSpike.TemplateLength %the signal must be the same size or larger than TEMPLATE.
 
