@@ -1,4 +1,4 @@
-function [ProcessedData] = PreProcessing(RawData,DetectionParameters)
+function [ProcessedData] = PreProcessing(RawData,DetectionParameters,File)
 
 LengthData = length(RawData);
 RawData = Filter(RawData,DetectionParameters);
@@ -10,7 +10,11 @@ approx = appcoef(C,L,'db4');
 [cd1,cd2,cd3,cd4] = detcoef(C,L,[1 2 3 4]);
 
 %% Thresholding: Remove by thresholding the cd1 with low amplitude keeping the important info of high amplitude peaks
-threshold = 5*std(cd1);
+if File.Name=="VV_ErasmeData.mat"
+    threshold = 3*std(cd1);
+else 
+    threshold = 5*std(cd1);
+end
 ix = find(abs(C)<threshold);
 C(ix) = 0; % this is the artifacts timings put them into zero to visualize the signal
 %% Wavelet reconstruction
