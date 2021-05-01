@@ -1,6 +1,4 @@
-%Authors : Couture Laura (Laura.Couture@ulb.be)
-%          Leroy Paul (Paul.Leroy@ulb.ac.be)
-%          Messiaen Emilien (Emilien.Messiaen@ulb.be)
+%Authors : Zineeb Smine & Rania Charkaoui 
 
 function [Algo_timeInCopy,Algo_timeOutCopy] = Check_spikes(CurrentRecording)
 
@@ -74,8 +72,12 @@ for Derivation=1:2:NumDerivation-1
     
 end
 %Create the two vectors which will be filled with the spikes kept
-Algo_timeInCopy = zeros();
-Algo_timeOutCopy = zeros();
+%Algo_timeInCopy = zeros();
+%Algo_timeOutCopy = zeros();
+threshold = 0.1;
+
+nb_min_same_pics = 2;
+[Algo_timeInCopy,Algo_timeOutCopy] = Check_Same_SpikeDetected(Algo_timeIn,Algo_timeOut, threshold, nb_min_same_pics);
 
 sum = 1;        %Index to save the previous position in ListDeriv 1->4 then 5->8,...
 p=1;            %index to increment in the arrays Algo_TimeInCopy and Algo_timeOutCopy
@@ -216,4 +218,22 @@ for t = 1:1:length(ListDeriv)                     %Browse the ListDeriv
 end
 Algo_timeInCopy = Algo_timeInCopy.';        %Change the arrays from line to column to keep the same structure
 Algo_timeOutCopy = Algo_timeOutCopy.';
+
+%threshold est l'interval de temps dans lequel on considère que 2 pics
+%sont les mêmes s'il sont tous les deux détectés dans cet interval
+% threshold = 0.1;
+% 
+% % nb_min_same_pics est le nombre minimum de fois qu'un pic doit être détecté 
+% % pour être accepté
+% nb_min_same_pics = 2;
+% disp("before")
+% %disp(Algo_timeInCopy)
+% [Algo_timeInCopy,Algo_timeOutCopy] = Check_delays(Algo_timeIn,Algo_timeOut, threshold, nb_min_same_pics);
+% 
+% disp("in")
+% disp(Algo_timeInCopy)
+% disp("out")
+% disp(Algo_timeOutCopy)
+
 end
+
