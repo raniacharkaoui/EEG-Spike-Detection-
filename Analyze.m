@@ -193,28 +193,27 @@ function Analyze()
 
         %Launch artefacts detection
         %Comment the next functions if you don't want to detect artifacts.
-         AlphaWaveDetection(file,CurrentRecording);
-         if file(CurrentRecording).Name=="AD_ErasmeData.mat" % ECG detection is only made for AD
+        AlphaWaveDetection(file,CurrentRecording);
+        if file(CurrentRecording).Name=="AD_ErasmeData.mat" % ECG detection is only made for AD
             ECGArtifactDetection(CurrentRecording);
-         end
+        end
          
-         load('Spikes.mat','file');
-         [MuscleArtifactsTimeIn,MuscleArtifactsTimeOut] = MuscleArtifactDetection(file(CurrentRecording));
-         %CardiacArtifactsTimeIn=[];
-         %CardiacArtifactsTimeOut=[];
-         %if file.Name=="AD_ErasmeData.mat"
-             %[CardiacArtifactsTimeIn,CardiacArtifactsTimeOut] = ECGArtifactDetection(file(CurrentRecording));
-         %end
-%         MuscleArtifactsTimeIn = [];
-%         MuscleArtifactsTimeOut = [];
+        load('Spikes.mat','file');
+        [MuscleArtifactsTimeIn,MuscleArtifactsTimeOut] = MuscleArtifactDetection(file(CurrentRecording));
+
+        % Artifacts study, uncomment the following function to launch the artifacts study.
+        %ArtifactsStudy(file,CurrentRecording,MuscleArtifactsTimeIn,MuscleArtifactsTimeOut);
+         
+        % If there are visible transmision line artifacts uncomment the
+        % following function. 
+        %[transmisionLineArtifactsTimeIn, TransmisionLineArtifactsTimeOut] = TransmisionLineDetection(file, CurrentRecording);
+        
 
         msg = ['Spikes detection for ' fileName ' is launched ...'];
         disp(msg);
         SWI = -1*ones(NumDerivation,1);
         NumClusters = -1*ones(NumDerivation,1);
         
-        % Artifacts study, uncomment the following function to launch the artifacts study.
-        %ArtifactsStudy(file,CurrentRecording,MuscleArtifactsTimeIn,MuscleArtifactsTimeOut);
 
         for Derivation = 1:NumDerivation  
             %retrieve alpha waves time
@@ -231,6 +230,8 @@ function Analyze()
             end
             
             % Gather all timings 
+            % If the transmision line detection has being done, include the
+            % transmisionLineArtifactsTimeIn and transmisionLineArtifactsTimeOut in this sort function
             artifactsTimeIn = sort([AlphaWaves_TimeIn;MuscleArtifactsTimeIn;CardiacArtifactsTimeIn]);
             artifactsTimeOut = sort([AlphaWaves_TimeOut;MuscleArtifactsTimeOut;CardiacArtifactsTimeOut]);
             
