@@ -206,7 +206,7 @@ function Analyze()
          
         % If there are visible transmision line artifacts uncomment the
         % following function. 
-        %[transmisionLineArtifactsTimeIn, TransmisionLineArtifactsTimeOut] = TransmisionLineDetection(file, CurrentRecording);
+        %[TransmisionLineArtifactsTimeIn, TransmisionLineArtifactsTimeOut] = TransmisionLineDetection(file, CurrentRecording);
         
 
         msg = ['Spikes detection for ' fileName ' is launched ...'];
@@ -231,7 +231,7 @@ function Analyze()
             
             % Gather all timings 
             % If the transmision line detection has being done, include the
-            % transmisionLineArtifactsTimeIn and transmisionLineArtifactsTimeOut in this sort function
+            % TransmisionLineArtifactsTimeIn and TransmisionLineArtifactsTimeOut in this sort function
             artifactsTimeIn = sort([AlphaWaves_TimeIn;MuscleArtifactsTimeIn;CardiacArtifactsTimeIn]);
             artifactsTimeOut = sort([AlphaWaves_TimeOut;MuscleArtifactsTimeOut;CardiacArtifactsTimeOut]);
             
