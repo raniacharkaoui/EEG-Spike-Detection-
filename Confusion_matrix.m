@@ -25,12 +25,18 @@ function Confusion_matrix()
         Exp2_timeIn = file(CurrentRecording).Exp_timeIn.Expert2;
         Exp2_timeOut = file(CurrentRecording).Exp_timeOut.Expert2;
         
-        isAllChecked = file(CurrentRecording).Recordings.isAllchecked; %Checking if check_spikes function can be used
+        isAllChecked_v = file(CurrentRecording).Recordings.isAllchecked_v;
+        isAllChecked_h = file(CurrentRecording).Recordings.isAllchecked_h;%Checking if check_spikes function can be used
+        transversalMontage = file(CurrentRecording).Recordings.transversalMontage ;
         
         PatientSpecificDetSpikes1 = file(CurrentRecording).PatientSpecificDetSpikes;
         
-        if isAllChecked == 1
-            [Algo_timeIn,Algo_timeOut] = Check_spikes(CurrentRecording); %Check_spikes is used only if all channels are chosen
+        if isAllChecked_v == 1 && isAllChecked_h == 0 && transversalMontage == 0
+            [Algo_timeIn,Algo_timeOut] = Check_spikes(CurrentRecording);%Check_spikes is used only if all channels in longitudinal montage are chosen
+        elseif isAllChecked_v == 0 && isAllChecked_h == 1 && transversalMontage == 0 %Check_spikes_horizontal is used only if all channels in longitudinal montage are chosen and the "horizontal analysis" option is ticked
+            [Algo_timeIn,Algo_timeOut] = Check_spikes_horizontal(CurrentRecording);
+        elseif  isAllChecked_v == 0 && isAllChecked_h == 0 && transversalMontage == 1 %Check_spikes_transversal will be used only if the bipolar transversal montage is chosen
+            [Algo_timeIn,Algo_timeOut] = Check_spikes_transversal(CurrentRecording);
         else
             [Algo_timeIn,Algo_timeOut] = Changes_algo_values(PatientSpecificDetSpikes1);
         end
