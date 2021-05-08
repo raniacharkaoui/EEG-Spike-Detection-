@@ -1,4 +1,5 @@
 % ECG artifact detection
+%Author : Laura
 function ECGArtifactDetection(CurrentRecording)
     
     load('Spikes.mat','file'); % get the file that has just been modified by the AlphawavesDetection
@@ -27,24 +28,58 @@ function ECGArtifactDetection(CurrentRecording)
 
     timeIn = Recordings.timeIn(1); % get the recordings starting time ( in seconds)
     timeOut = Recordings.timeOut(length(Recordings.timeOut)); % get the recordings starting time ( in seconds )
-    
+
+%% FIRST METHOD TO DETECT THE CARDIAC ARTIFACTS (QRS PEAKS). Pre-processing first and detecting based on derivatives. (Less sensitive to threshold's variation)
+
     for j=1:electrodeRow 
         [RawData] = GetData(timeIn,timeOut,electrode(j,:),electrodeRef,Recordings.fname,DetectionParameters,fileData); % get the data of the ECG electrode
 
+        % Filter the ECG signal artifacts
+
+        % Base line correction, high pass filter
         Wn = 1/(DetectionParameters.Fs/2); % sampling frequency Fs=250 Hz , cuttof frequency Wn=1Hz to filter offsets
         [Bhp,Ahp] = butter(5,Wn,'high'); % butterworth filter of order 5 and cuttof frequecny Wn=1Hz
         ProcessedData = filtfilt(Bhp,Ahp,RawData); % filter the ECG signal with the butterworth filter   
 
         interval = length(RawData); % number of samples in the data
-        time = linspace(timeIn,timeOut,interval); % linearize (in seconds) the time from timIn to timeOut with the number of samples
+        time = linspace(timeIn,timeOut,interval); %% linearize (in seconds) the time from timIn to timeOut with the number of samples
+         % Network noise correction (band filter) "Fre" can be 50 or 60 Hz.
+        fre = 50; 
+        w=fre/(DetectionParameters.Fs/2);
+        bw=w/35;
+        [d,c]=iirnotch(w,bw);
+        filterNet=filter(d,c,ProcessedData);
+        ProcessedData_2=filtfilt(d,c,filterNet);
 
-        listArtifacts = []; % list of the times at which the signal crosses 300 micro Volts
-        for i=1:length(ProcessedData)
-            if ProcessedData(i)>=300 % if the signal goes higher than 300 micro Volts at some time
-                listArtifacts = [listArtifacts;time(ProcessedData == ProcessedData(i))]; % the time is stored in listArtifacts
-            end
-        end
+        % Low pass filter to reduce high frequency noises as EMG.
+        % Resisting patient normal values of ECG is between 60-90
+        freq = 90;
+        N = 5;
+        [e,f] = butter(N,freq/(DetectionParameters.Fs/2),'low');
+        ProcessedData_3=filtfilt (e,f,ProcessedData_2);
+        [QRS,Npeaks,listArtifacts]= ECG_det_dif(ProcessedData_3, DetectionParameters.Fs,0.6);
     end
+
+%% SECOND MANNER TO DETECT THE CARDIAC ARTIFACTS (THRESHOLDING)
+%    for j=1:electrodeRow 
+%        [RawData] = GetData(timeIn,timeOut,electrode(j,:),electrodeRef,Recordings.fname,DetectionParameters,fileData); % get the data of the ECG electrode
+%
+%        Wn = 1/(DetectionParameters.Fs/2); % sampling frequency Fs=250 Hz , cuttof frequency Wn=1Hz to filter offsets
+%        [Bhp,Ahp] = butter(5,Wn,'high'); % butterworth filter of order 5 and cuttof frequecny Wn=1Hz
+%        ProcessedData = filtfilt(Bhp,Ahp,RawData); % filter the ECG signal with the butterworth filter   
+%
+%        interval = length(RawData); % number of samples in the data
+%        time = linspace(timeIn,timeOut,interval); % linearize (in seconds) the time from timIn to timeOut with the number of samples
+%
+%        listArtifacts = []; % list of the times at which the signal crosses 300 micro Volts
+%        for i=1:length(ProcessedData)
+%            if ProcessedData(i)>=300 % if the signal goes higher than 300 micro Volts at some time
+%                listArtifacts = [listArtifacts;time(ProcessedData == ProcessedData(i))]; % the time is stored in listArtifacts
+%            end
+%        end
+%    end
+    
+    
     listArtifacts = sort(listArtifacts); % sort the times in chronological order (just in case it wasn't already)
     if ~isempty(listArtifacts) % if the list isn't empty
         % artifactTimeIn and artifactTimeOut are the lists of all starting
@@ -88,10 +123,11 @@ function ECGArtifactDetection(CurrentRecording)
         nrElectrodeRight = deblank(nrElectrodeRight_list(Derivation,:)); % string of the right electrone name
         
         derivation_name=[nrElectrodeLeft ' - ' nrElectrodeRight]; % name of the derivation
-        
+
         if isequal(derivation_name,'EEG T9 - EEG P9')||isequal(derivation_name,'EEG T10 - EEG P10')...
-                ||isequal(derivation_name,'EEG P3 - EEG O1')||isequal(derivation_name,'EEG P4 - EEG O2')...
-                ||isequal(derivation_name,'EEG T6 - EEG 02')||isequal(derivation_name,'EEG C3 - EEG P3')
+                     ||isequal(derivation_name,'EEG P3 - EEG O1')||isequal(derivation_name,'EEG P4 - EEG O2')...
+                     ||isequal(derivation_name,'EEG T6 - EEG O2')||isequal(derivation_name,'EEG C3 - EEG P3')...
+                     ||isequal(derivation_name,'EEG T5 - EEG O1')||isequal(derivation_name,'EEG T3 - EEG T5')
             % if the derivation is one of those derivations mentioned ( the
             % ones visually influenced by ECG artifacts), the artifacts
             % timings are stored in the cardiac_spike structure for that

@@ -504,7 +504,7 @@ function choose_ExpertData1(~,~)
     handles=guidata(gcbf);
     [fileExpert, path] = uigetfile('*.mat','Choisir le fichier à ouvrir :');
     
-    if endsWith(path,'/')% sometimes path name ends with '\'
+    if endsWith(path,'/')% sometimes path name ends with '/'
         load([path fileExpert]);
     else
         load([path '/' fileExpert]);

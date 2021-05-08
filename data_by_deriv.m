@@ -10,7 +10,7 @@ fileName = file.Name;
 path = file.Recordings.path;
 fileData = struct([]);
 if endsWith(file.Name,'.mat')
-    fileData = load([path '\' fileName]);
+    fileData = load([path '/' fileName]);
 end
 
 

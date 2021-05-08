@@ -17,7 +17,8 @@ function Main2(path,fileName,timeIn,timeOut,timeDebrec,nrElectrodeLeft,nrElectro
     % General parameters
     DetectionParameters.MinimumDistance2Spikes = 75; % ms
     DetectionParameters.WindowLength = 300; % ms
-
+ 
+    
     % Generic spike detection parameters
     DetectionParameters.GenericCrossCorrelationThresh = 0.5; % Cross-correlation threshold
     DetectionParameters.GenericFeaturesThresh = 0.3; % Features threshold

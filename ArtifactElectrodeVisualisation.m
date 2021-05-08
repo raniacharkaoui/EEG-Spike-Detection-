@@ -22,7 +22,7 @@ function ArtifactElectrodeVisualisation()
         path = file(CurrentRecording).Recordings.path;
         fileData = struct([]);
         if endsWith(file(CurrentRecording).Name,'.mat')
-            fileData = load([path '\' fileName]);
+            fileData = load([path '/' fileName]);
         end
         f = figure;
         set(f,'Name',fileName)

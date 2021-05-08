@@ -10,7 +10,8 @@ function CreateXMLfile(CurrentRecording)
    path = file(CurrentRecording).Recordings.path;
    fileName = file(CurrentRecording).Name;
    load([path fileName],'Data');
-   isAllChecked = file(CurrentRecording).Recordings.isAllchecked; %determines if Check_spikes must intervene
+   isAllChecked_v = file(CurrentRecording).Recordings.isAllchecked_v; %determines if Check_spikes must intervene
+   isAllChecked_h = file(CurrentRecording).Recordings.isAllchecked_h;
    
     for event=1:length(Data.Events)
         if (Data.Events(event).Type==1 && Data.Events(event).Subtype==1)
@@ -32,7 +33,7 @@ function CreateXMLfile(CurrentRecording)
     Events = docNode.createElement('Events');
     EventsResultElement.appendChild(Events);
     
-    if isAllChecked == 1
+    if isAllChecked_v == 1
         [algo_timeIn,algo_timeOut] = Check_spikes(1);
     else
         PatientSpecificDetSpikes = file(CurrentRecording).PatientSpecificDetSpikes;
@@ -97,9 +98,9 @@ function CreateXMLfile(CurrentRecording)
         mkdir 'XMLData'
     end
 
-    xmlwrite([folder '\' erase(fileName,'.mat') '.xml'],docNode);
-    winopen([folder '\' erase(fileName,'.mat') '.xml']); %opens the file
-    %type([folder '\' erase(fileName,'.mat') '.xml']); % show the file in cmd window
-    disp(['Finished creating ' folder '\'  erase(fileName,'.mat') '.xml']);
+    xmlwrite([folder '/' erase(fileName,'.mat') '.xml'],docNode);
+    winopen([folder '/' erase(fileName,'.mat') '.xml']); %opens the file
+    %type([folder '/' erase(fileName,'.mat') '.xml']); % show the file in cmd window
+    disp(['Finished creating ' folder '/'  erase(fileName,'.mat') '.xml']);
 
 end

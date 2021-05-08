@@ -31,7 +31,7 @@ function [x,Fs,Start_date,Start_time,Label,Dimension,Coef,Nmb_chans,N] = readedf
 if nargin<1;t1=0;end
 if nargin<2;t2=3600;end
 if nargin<3;ch=8;end
-if nargin<4;fname='C:\matlabR12\work\edf\justine.edf';end
+if nargin<4;fname='C:\matlabR12\work\edf\justine.edf';end %this doesn't work in macos
 % Check between file name / file handle
 if length(fname)==1
 	fid = fname;

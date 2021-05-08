@@ -16,7 +16,7 @@ function AnalyzeParam()
         path = file(CurrentRecording).Recordings.path;
         fileData = struct([]);
         if endsWith(fileName,'.mat')
-            fileData = load([path '\' fileName]);
+            fileData = load([path '/' fileName]);
         end
         NumDerivation = length(Recordings.nrElectrodeLeft(:,1));
         PatientSpecificDetSpikes(NumDerivation).Det = []; % preallocation for speed

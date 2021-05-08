@@ -1,7 +1,7 @@
 %This function allows the detection of muscle artifacts according to a
 %threshold.
-%Author : Emelyne Vignon
-%Contact : emelyne.vignon@reseau.eseo.fr
+%Author :Laura 
+%Contact : 
 
 function [artifactTimeIn,artifactTimeOut] = MuscleArtifactDetection(File)
 
@@ -10,6 +10,10 @@ function [artifactTimeIn,artifactTimeOut] = MuscleArtifactDetection(File)
     fileName = File.Name;
     path = File.Recordings.path;
     fileData = struct([]);
+    
+    msg = ['Muscular artifact  detection for ' fileName ' is launched ...'];
+    disp(msg);
+    
     if endsWith(fileName,'.mat')
         fileData = load([path '/' fileName]);
     end
@@ -127,4 +131,7 @@ function [artifactTimeIn,artifactTimeOut] = MuscleArtifactDetection(File)
         artifactTimeIn = [];
         artifactTimeOut = [];
     end
+    
+    msg = ['Muscular artifact  detection for ' fileName ' is finished ...'];
+    disp(msg);
 end

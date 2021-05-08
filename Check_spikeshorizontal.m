@@ -1,4 +1,3 @@
-%Authors : Selene Argyrakis, Rym Ouachi and Lisa Woby Mfongou
 function [Algo_timeInCopy,Algo_timeOutCopy] = Check_spikes_transversal(CurrentRecording)
 
 %Function equivalent to Check_spikes but with a horizontal montage
@@ -16,12 +15,13 @@ if endsWith(fileName,'.mat')
 end
 
 % Retrieve number of EEG derivations (channels on horizontal montage)
-NumDerivation = length(Recording.nrElectrodeLeft(1:40,1));
+NumDerivation = length(Recording.nrElectrodeLeft(1:44,1));
 
 %List containing the numbers of channels for one raw to compare good neighbours
 
 ListDerivh = [1,6,6,6,1];
 
+LinesChecked = find(ListDerivh>1); %Find indexes of lines to be checked
 
 %Take spikes detected after the specific detection for the analyzed file
 PatientSpecificDetSpikes1 = file(CurrentRecording).PatientSpecificDetSpikes;
@@ -58,10 +58,9 @@ end
 % 
 % [lin,col] = size(MatDataTot)
 
-threshold = 0.1;
-
-nb_min_same_pics = 2;
-[Algo_timeInCopy,Algo_timeOutCopy] = Check_Same_SpikeDetected(Algo_timeIn,Algo_timeOut, threshold, nb_min_same_pics);
+%Create the two vectors which will be filled with the spikes kept
+Algo_timeInCopy = zeros();
+Algo_timeOutCopy = zeros();
 
 sum = 1;        %Index to save the previous position in ListDeriv 1->4 then 5->8,...
 p=1;            %index to increment in the arrays Algo_TimeInCopy and Algo_timeOutCopy
@@ -85,7 +84,7 @@ for t = 1:1:length(ListDerivh)                     %Browse the ListDeriv
         if (t==2 | t ==3 | t==4) && j == 1             %For first derivation not in the first row in order to not compare with a fake neighbour
                                                        %which is in the previous row
             for i=x0(sum-1)+1:1:x0(sum)-1              %Browse all times of spikes in the first derivation
-%                  disp(i)
+%                 disp(i)
                 indexIn  = round(Algo_timeIn(i)/4);
                 indexOut  = round(Algo_timeOut(i)/4 - 1);
                 
@@ -115,7 +114,7 @@ for t = 1:1:length(ListDerivh)                     %Browse the ListDeriv
         
         if (t==2 | t ==3 | t==4) && j==6            %For the last derivation of each row
             
-            for i=x0(sum-1)+1:1:x0(sum)-1         %Browse the times where spikes are detected in the last derivation in order to
+            for i=(x0(sum-1))+1:1:x0(sum)-1         %Browse the times where spikes are detected in the last derivation in order to
                                                   %not compare with a fake neighbour which is in the next row
                 indexIn  = round(Algo_timeIn(i)/4);
                 indexOut  = round(Algo_timeOut(i)/4 - 1);
@@ -145,7 +144,7 @@ for t = 1:1:length(ListDerivh)                     %Browse the ListDeriv
         end
         if  (t==2 | t ==3 | t==4) && 1<j<6        %For derivations which are not the first or the last
             
-            for i=x0(sum-1)+1:1:x0(sum)-1%Browse times where spikes are detected in the derivation
+            for i=(x0(sum-1))+1:1:x0(sum)-1%Browse times where spikes are detected in the derivation
                 
                 indexIn  = round(Algo_timeIn(i)/4);
                 indexOut  = round(Algo_timeOut(i)/4 - 1);
@@ -174,19 +173,20 @@ for t = 1:1:length(ListDerivh)                     %Browse the ListDeriv
         end
         
         if t == 5 
-            for i = x0(sum-1)+1:1:x0(sum) - 1
+            for i = x0(sum+1):1:x0(sum) - 1
                     Algo_timeInCopy(p)=Algo_timeIn(i);              %Put in AlgotimeInCopy the good spikes (their times)
                     Algo_timeOutCopy(p)=Algo_timeOut(i);
                     p=p+1;
-            end  
-        end
+                
         Algo_timeInCopy(p)= 0;              %Put a 0 in the list containing times of spikes checked when a derivation is finished 
         Algo_timeOutCopy(p)= 0;             %to keep the same structure as AlgotimeIn
         p=p+1;
-        sum = sum + 1   ;                 %Increment for the ListDerivh 
+        sum = sum + 1  ;                    %Increment for the ListDerivh 
     end
 end
 Algo_timeInCopy = Algo_timeInCopy.' ;       %Change the arrays from line to column to keep the same structure
 Algo_timeOutCopy = Algo_timeOutCopy.';
 
+    end
+end
 end

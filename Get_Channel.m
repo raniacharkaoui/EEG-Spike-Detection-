@@ -9,7 +9,7 @@ function Channel = Get_Channel(path,fileName,channel,fileData)
 
     if isa(fileData,'struct') % In case there is only one file selected
         if endsWith(fileName,'.edf') || endsWith(fileName,'.EDF')
-            [edfFile] = edfread([path '\' fileName]);
+            [edfFile] = edfread([path '/' fileName]);
             x = edfFile.label;
             k = find(contains(x,channel));
             if(k ~= 0)
@@ -40,7 +40,7 @@ function Channel = Get_Channel(path,fileName,channel,fileData)
     elseif isa(fileData,'cell') % In case there is many files selected
         for i=1:length(fileName)
             if endsWith(fileName,'.edf') || endsWith(fileName,'.EDF')
-                [edfFile] = edfread([path '\' fileName]);
+                [edfFile] = edfread([path '/' fileName]);
                 x = edfFile.label;
                 k = find(contains(x,channel));
                 if(k ~= 0)

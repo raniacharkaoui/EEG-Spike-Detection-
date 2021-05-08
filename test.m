@@ -1,4 +1,3 @@
-
 function [Algo_timeIn_hCopy,Algo_timeOut_hCopy] = Check_spikes_horizontal(CurrentRecording)
 
 load('Spikes.mat','file');    %Beginnig from the file Spikes.mat which possesses all times of spikes detected (AlgotimeIn, AlgotimeOut)
@@ -19,15 +18,19 @@ end
 NumDerivation = length(Recording.nrElectrodeLeft(1:44,1));
 order_channels = [9 1 5 13 19 10 2 17 6 14 21 20 11 3 18 7 15 22 12 4 8 16];
 order_electrodes = [17 18 1 2 9 10 25 26 37 38 19 29 3 4 33 34 11 12 27 28 41 42 39 40 21 22 5 6 35 36 13 14 29 30 43 44 23 24 7 8 15 16 31 32 ];
+index_start = [9 19 20 12];
+index_stop = [13 21 22 16];
 
 %Take spikes detected after the specific detection for the analyzed file
 PatientSpecificDetSpikes1 = file(CurrentRecording).PatientSpecificDetSpikes(:,1:44);
 
 %Put them into two lists with the times of beginning and end of the window
 %where spikes are detected. There is a 0 between each channel.
-[Algo_timeInCopy,Algo_timeOutCopy] = Check_spikes(CurrentRecording); %get the new list from Check_spikes
+[Algo_timeInCopy,Algo_timeOutCopy] = Check_spikes(CurrentRecording);
 % [Algo_timeIn,Algo_timeOut] = Changes_algo_values(PatientSpecificDetSpikes1);
-
+%List with the position of zeros in Algo_timeOut in order to see when we
+%switch from one channel to another
+% x0 = find(~Algo_timeOutCopy);
 x0 = find(~Algo_timeOutCopy);
 %Create a big matrix retrieving all signals (time-amplitude) where each column = one derivation 
 [MatDataTot]=zeros(DetectionParameters.Fs*(Recording.timeOut(length(Recording.timeOut))-Recording.timeIn(1)),NumDerivation/2);
@@ -35,7 +38,7 @@ x0 = find(~Algo_timeOutCopy);
 
 for Derivation=1:2:NumDerivation-1
     
-    Index = order_electrodes(Derivation); %put the channels in the new order
+    Index = order_electrodes(Derivation);
     nrElectrodeLeft = deblank(Recording.nrElectrodeLeft(Index,:));
     nrElectrodeRight = deblank(Recording.nrElectrodeRight(Index,:));
     
@@ -45,15 +48,14 @@ for Derivation=1:2:NumDerivation-1
       
 end
 
-%Create the two vectors which will be filled with the data in the right
-%order
+%Create the two vectors which will be filled with the spikes kept
 Algo_timeIn_h = zeros();
 Algo_timeOut_h = zeros();
-order_channels = [9 1 5 13 19 10 2 17 6 14 21 20 11 3 18 7 15 22 12 4 8 16];
+
 a = 1;
 for i = 1 : 1 : length(order_channels)
         index = order_channels(i);
-        x0_h(i) = x0(index);
+        x0_h(i) = x0(index); %list of values for next channels
         stop = x0_h(i)-1;
         if index == 1
             start = 1;
@@ -62,6 +64,8 @@ for i = 1 : 1 : length(order_channels)
         end
         
         for i = start : 1 : stop 
+%             b = Algo_timeInCopy(i);
+%             c = Algo_timeOutCopy(i);
             b = Algo_timeInCopy(i);
             c = Algo_timeOutCopy(i);
             Algo_timeIn_h(a) = b;
@@ -70,12 +74,13 @@ for i = 1 : 1 : length(order_channels)
         end
         Algo_timeIn_h(a)= 0;              %Put a 0 in the list containing times of spikes checked when a derivation is finished 
         Algo_timeOut_h(a)= 0; 
+%         Algo_timeInCopy(a)= 0;              %Put a 0 in the list containing times of spikes checked when a derivation is finished 
+%         Algo_timeOutCopy(a)= 0;             %to keep the same structure as AlgotimeIn
         a = a + 1;  
 end
-
 x1 = find(~Algo_timeOut_h);
 x1 = x1.';
-
+nr = length(x1);
 
 Algo_timeIn_hCopy = zeros();
 Algo_timeOut_hCopy = zeros();
@@ -233,10 +238,10 @@ Algo_timeOut_v = zeros();
 x = 1;
 x3 = find(~Algo_timeOut_hCopy);
 x3 = x3.';
-
+disp(length(x3));
 for i = 1 : 1 : length(order_channels)
         index = order_channels(i);
-        x2(index) = x3(i); %rechange the indexes of the list in order to have the same order than the experts
+        x2(index) = x3(i); %list of values for next channels
         stop = x3(index)-1;
         if index == 1
             start = 1;
@@ -251,14 +256,13 @@ for i = 1 : 1 : length(order_channels)
             Algo_timeOut_v(x) = c;
             x = x + 1;           
         end
-         Algo_timeIn_v(x)= 0;  %Put a 0 in the list containing times of spikes checked when a derivation is finished 
-         Algo_timeOut_v(x)= 0; 
+         Algo_timeIn_v(x)= 0;              %Put a 0 in the list containing times of spikes checked when a derivation is finished 
+         Algo_timeOut_v(x)= 0;             %to keep the same structure as AlgotimeIn
          x = x + 1;  
 end
-
-Algo_timeIn_v = Algo_timeIn_v.' %final spikes kept after check_spikes and checl_spikes_horizontally combined
+Algo_timeIn_v = Algo_timeIn_v.'
 Algo_timeIn_v = Algo_timeOut_v.';
-% x4 = find(~Algo_timeIn_v);
-% disp(length(x4));
+x4 = find(~Algo_timeIn_v);
+disp(length(x4))
 end
     

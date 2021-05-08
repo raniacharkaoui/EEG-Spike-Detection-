@@ -1,7 +1,23 @@
+%Author : Laura
 function [ProcessedData] = PreProcessing(RawData,DetectionParameters)
 
 LengthData = length(RawData);
 RawData = Filter(RawData,DetectionParameters);
+
+% Denoising the signal using discrete wavelet transfrom 
+% Wavelet decomposition
+[C,L] = wavedec(RawData,4,'db4');
+approx = appcoef(C,L,'db4');
+[cd1,cd2,cd3,cd4] = detcoef(C,L,[1 2 3 4]);
+
+%% Thresholding: Remove by thresholding the cd1 with low amplitude keeping the important info of high amplitude peaks
+%if "VV_ErasmeData.mat" for little improvement the threshold is 3.
+%threshold = 3*std(cd1);
+threshold = 5*std(cd1);
+ix = find(abs(C)<threshold);
+C(ix) = 0; % this is the artifacts timings put them into zero to visualize the signal
+%% Wavelet reconstruction
+RawData = waverec(C,L,'db4'); 
 
 % First derivation estimation
 Der(1) = (2*RawData(1))./8;

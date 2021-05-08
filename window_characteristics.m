@@ -296,7 +296,7 @@ handles.ch(22) = uicontrol(h1,'Style', 'checkbox',...
     path = file(current).Recordings.path;
     fileData = struct([]);
     if endsWith(fileName,'.mat')
-        fileData = load([path '\' fileName]);
+        fileData = load([path '/' fileName]);
     end
  
  
