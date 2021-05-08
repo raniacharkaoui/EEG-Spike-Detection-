@@ -89,7 +89,7 @@ function choose_file(~,~)
                 file(i).Name = fileName{i};
                 file(i).Done = false;
                 if endsWith(fileName{i},'.mat')
-                    fileData{i} = load([path '/' fileName{i}]);
+                    fileData{i} = load([path '\' fileName{i}]);
                 end
             end
         else
