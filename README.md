@@ -2,6 +2,7 @@
 Implementation and validation of a spike detection algorithm 
 
 ## Main branch
+This branch contains the final version of the algorithm for Window. 
 
 ## Mac-users branch
 As the code did not take into account the file management of different operating systems, we had to create a dedicated version for Mac users. 
