@@ -1,6 +1,7 @@
-%Authors : Couture Laura (Laura.Couture@ulb.be)
-%          Leroy Paul (Paul.Leroy@ulb.ac.be)
-%          Messiaen Emilien (Emilien.Messiaen@ulb.be)
+%% Authors : Zineb Smine & Rania Charkaoui 
+%% This is not very different from the previous version of the code 
+%% We changed 2 main lines to implement the function Check_Same_SpikeDetected
+%% It is implemented before the autocorrelation coded yaer 2019-2020
 
 function [Algo_timeInCopy,Algo_timeOutCopy] = Check_spikes(CurrentRecording)
 
@@ -74,8 +75,21 @@ for Derivation=1:2:NumDerivation-1
     
 end
 %Create the two vectors which will be filled with the spikes kept
-Algo_timeInCopy = zeros();
-Algo_timeOutCopy = zeros();
+%Algo_timeInCopy = zeros();
+%Algo_timeOutCopy = zeros();
+
+%We changed the two line just before that's why they are commented
+
+
+% threshold is the time interval in which we consider that 2 spikes are the same 
+% if they are both detected s'il sont tous les deux détectés dans cet interval
+% threshold = 0.1;
+% 
+% nb_min_same_pics is the number of times that a spike must be deteted
+% to be accepted
+threshold = 0.1;
+nb_min_same_pics = 2;
+[Algo_timeInCopy,Algo_timeOutCopy] = Check_Same_SpikeDetected(Algo_timeIn,Algo_timeOut, threshold, nb_min_same_pics);
 
 sum = 1;        %Index to save the previous position in ListDeriv 1->4 then 5->8,...
 p=1;            %index to increment in the arrays Algo_TimeInCopy and Algo_timeOutCopy
@@ -216,4 +230,8 @@ for t = 1:1:length(ListDeriv)                     %Browse the ListDeriv
 end
 Algo_timeInCopy = Algo_timeInCopy.';        %Change the arrays from line to column to keep the same structure
 Algo_timeOutCopy = Algo_timeOutCopy.';
+
+
+
 end
+
