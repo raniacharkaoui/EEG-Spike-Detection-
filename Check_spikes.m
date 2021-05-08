@@ -1,4 +1,7 @@
-%Authors : Zineeb Smine & Rania Charkaoui 
+%% Authors : Zineb Smine & Rania Charkaoui 
+%% This is not very different from the previous version of the code 
+%% We changed 2 main lines to implement the function Check_Same_SpikeDetected
+%% It is implemented before the autocorrelation coded yaer 2019-2020
 
 function [Algo_timeInCopy,Algo_timeOutCopy] = Check_spikes(CurrentRecording)
 
@@ -74,8 +77,17 @@ end
 %Create the two vectors which will be filled with the spikes kept
 %Algo_timeInCopy = zeros();
 %Algo_timeOutCopy = zeros();
-threshold = 0.1;
 
+%We changed the two line just before that's why they are commented
+
+
+% threshold is the time interval in which we consider that 2 spikes are the same 
+% if they are both detected s'il sont tous les deux détectés dans cet interval
+% threshold = 0.1;
+% 
+% nb_min_same_pics is the number of times that a spike must be deteted
+% to be accepted
+threshold = 0.1;
 nb_min_same_pics = 2;
 [Algo_timeInCopy,Algo_timeOutCopy] = Check_Same_SpikeDetected(Algo_timeIn,Algo_timeOut, threshold, nb_min_same_pics);
 
@@ -219,21 +231,7 @@ end
 Algo_timeInCopy = Algo_timeInCopy.';        %Change the arrays from line to column to keep the same structure
 Algo_timeOutCopy = Algo_timeOutCopy.';
 
-%threshold est l'interval de temps dans lequel on considère que 2 pics
-%sont les mêmes s'il sont tous les deux détectés dans cet interval
-% threshold = 0.1;
-% 
-% % nb_min_same_pics est le nombre minimum de fois qu'un pic doit être détecté 
-% % pour être accepté
-% nb_min_same_pics = 2;
-% disp("before")
-% %disp(Algo_timeInCopy)
-% [Algo_timeInCopy,Algo_timeOutCopy] = Check_delays(Algo_timeIn,Algo_timeOut, threshold, nb_min_same_pics);
-% 
-% disp("in")
-% disp(Algo_timeInCopy)
-% disp("out")
-% disp(Algo_timeOutCopy)
+
 
 end
 
