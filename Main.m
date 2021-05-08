@@ -6,7 +6,7 @@
 
 
 
-function Main(path,fileName,timeIn,timeOut,timeDebrec,nrElectrodeLeft,nrElectrodeRight,current,changeSettings, isAllChecked)    
+function Main(path,fileName,timeIn,timeOut,timeDebrec,nrElectrodeLeft,nrElectrodeRight,current,changeSettings, isAllChecked_v,isAllChecked_h,transversalMontage)    
     if current == 0 % used to recover previous analysis
         windowAnalyze(); 
     else
@@ -41,7 +41,7 @@ function Main(path,fileName,timeIn,timeOut,timeDebrec,nrElectrodeLeft,nrElectrod
     
     if current == 1
         for i=1:length(file)
-            [Recordings] = AttribuePat(DBPath,file(i).Name,timeIn,timeOut,timeDebrec,nrElectrodeLeft,nrElectrodeRight,i, isAllChecked);
+            [Recordings] = AttribuePat(DBPath,file(i).Name,timeIn,timeOut,timeDebrec,nrElectrodeLeft,nrElectrodeRight,i, isAllChecked_v,isAllChecked_h,transversalMontage);
             if i==1
                 file(1).Recordings = Recordings;
                 file(1).DetectionParameters = DetectionParameters;
@@ -55,7 +55,7 @@ function Main(path,fileName,timeIn,timeOut,timeDebrec,nrElectrodeLeft,nrElectrod
         end
         
     else
-        [Recordings] = AttribuePat(DBPath,file(current).Name,timeIn,timeOut,timeDebrec,nrElectrodeLeft,nrElectrodeRight,current, isAllChecked);
+        [Recordings] = AttribuePat(DBPath,file(current).Name,timeIn,timeOut,timeDebrec,nrElectrodeLeft,nrElectrodeRight,current, isAllChecked_v,isAllChecked_h);
         file(current).Recordings = Recordings;
         file(current).DetectionParameters = DetectionParameters;
     end
