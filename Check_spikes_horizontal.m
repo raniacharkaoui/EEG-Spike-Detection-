@@ -259,7 +259,7 @@ for i = 1 : 1 : length(order_channels)
          Algo_timeOut_v(x)= 0;             %to keep the same structure as AlgotimeIn
          x = x + 1;  
 end
-Algo_timeIn_v = Algo_timeIn_v.' %final spikes kept after check_spikes and checl_spikes_horizontally combined
+Algo_timeIn_v = Algo_timeIn_v.'; %final spikes kept after check_spikes and checl_spikes_horizontally combined
 Algo_timeIn_v = Algo_timeOut_v.';
 % x4 = find(~Algo_timeIn_v);
 % disp(length(x4));
